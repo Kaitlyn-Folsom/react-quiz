@@ -7,6 +7,7 @@ import StartScreen from './components/StartScreen';
 import Question from './components/Question';
 import NextButton from './components/NextButton';
 import Progress from './components/Progress';
+import FinishScreen from './components/FinishScreen';
 
 const initialState = {
   questions: [],
@@ -14,6 +15,7 @@ const initialState = {
   index: 0,
   answer: null,
   points: 0,
+  highscore: 0,
 };
 
 function reducer(state, action) {
@@ -47,13 +49,19 @@ function reducer(state, action) {
         index: state.index + 1,
         answer: null,
       };
+    case 'finish':
+      return {
+        ...state,
+        status: 'finished',
+        highscore: state.points > state.highscore ? state.points : state.highscore,
+      };
     default:
       throw new Error('action unknown');
   }
 }
 
 export default function App() {
-  const [{ questions, status, index, answer, points }, dispatch] = useReducer(reducer, initialState);
+  const [{ questions, status, index, answer, points, highscore }, dispatch] = useReducer(reducer, initialState);
 
   const questionsCount = questions.length;
   const totalPoints = questions.reduce((prev, cur) => prev + cur.points, 0);
@@ -78,9 +86,10 @@ export default function App() {
           <>
             <Progress index={index} questionsCount={questionsCount} points={points} totalPoints={totalPoints} answer={answer} />
             <Question question={questions[index]} dispatch={dispatch} answer={answer} />
-            <NextButton dispatch={dispatch} answer={answer} />
+            <NextButton dispatch={dispatch} answer={answer} index={index} questionsCount={questionsCount} />
           </>
         )}
+        {status === 'finished' && <FinishScreen points={points} totalPoints={totalPoints} highscore={highscore} />}
       </Main>
     </div>
   );

@@ -1,11 +1,21 @@
-function NextButton({ dispatch, answer }) {
+function NextButton({ dispatch, answer, index, questionsCount }) {
   if (answer === null) return null;
 
-  return (
-    <button className='btn btn-ui' onClick={() => dispatch({ type: 'nextQuestion' })}>
-      NEXT
-    </button>
-  );
+  if (index < questionsCount - 1) {
+    return (
+      <button className='btn btn-ui' onClick={() => dispatch({ type: 'nextQuestion' })}>
+        NEXT
+      </button>
+    );
+  }
+
+  if (index === questionsCount - 1) {
+    return (
+      <button className='btn btn-ui' onClick={() => dispatch({ type: 'finish' })}>
+        FINISH
+      </button>
+    );
+  }
 }
 
 export default NextButton;
